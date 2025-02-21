@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basosoryu STORE</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Basosoryu TOPUP</h1>
+    </header>
+    
+    <main>
+        <section class="game-list">
+            <h2>Pilih Game</h2>
+            <div class="games">
+                <div class="game" onclick="selectGame('Mobile Legends')">
+                    <img src="https://logodix.com/logo/956250.png" alt="Mobile Legends">
+                    <p>Mobile Legends</p>
+                </div>
+                <div class="game" onclick="selectGame('Free Fire')">
+                    <img src="ff.png" alt="Free Fire">
+                    <p>Free Fire</p>
+                </div>
+                <div class="game" onclick="selectGame('PUBG Mobile')">
+                    <img src="pubg.png" alt="PUBG Mobile">
+                    <p>PUBG Mobile</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="topup-form">
+            <h2>Masukkan Detail</h2>
+            <input type="text" id="game_id" placeholder="Masukkan ID Game" required>
+            <select id="nominal">
+                <option value="">Pilih Nominal</option>
+                <option value="5">5 Diamonds</option>
+                <option value="10">10 Diamonds</option>
+                <option value="50">50 Diamonds</option>
+            </select>
+            <button onclick="submitTopup()">Top-Up Sekarang</button>
+            <p id="response"></p>
+        </section>
+    </main>
+    
+    <footer>
+        &copy; 2025 TopUpGame | Cepat, Aman, Terpercaya
+    </footer>
+    
+    <script>
+        let selectedGame = "";
+        function selectGame(game) {
+            selectedGame = game;
+            alert("Game yang dipilih: " + game);
+        }
+        
+        function submitTopup() {
+            const gameId = document.getElementById("game_id").value;
+            const nominal = document.getElementById("nominal").value;
+            
+            if (!selectedGame) {
+                alert("Silakan pilih game terlebih dahulu!");
+                return;
+            }
+            if (!gameId || !nominal) {
+                alert("Harap isi semua field!");
+                return;
+            }
+            
+            fetch("/api/topup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ game: selectedGame, game_id: gameId, nominal: nominal })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("response").innerText = "Status: " + data.status;
+            })
+            .catch(err => console.error("Error:", err));
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
